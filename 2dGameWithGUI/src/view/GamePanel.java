@@ -1,6 +1,5 @@
-package View;
+package view;
 
-import core.Board;
 import core.GameEngine;
 import models.Cell;
 import utils.ImageLoader;
@@ -17,6 +16,7 @@ public class GamePanel extends JPanel {
     private final BufferedImage portalSprite;
     private final BufferedImage fireSprite;
     private final BufferedImage fireSplashSprite;
+    private final BufferedImage knightDeathSprite;
     private final BufferedImage knightSprite;
 
     public GamePanel(GameEngine engine) {
@@ -27,6 +27,7 @@ public class GamePanel extends JPanel {
         portalSprite = ImageLoader.load("/textures/Portal.png");
         fireSprite = ImageLoader.load("/textures/Fire.png");
         fireSplashSprite = ImageLoader.load("/textures/FireSplash.png");
+        knightDeathSprite = ImageLoader.load("/textures/KnightDeath.png");
         knightSprite = ImageLoader.load("/textures/Knight.png");
         setPreferredSize(new Dimension(engine.getBoard().getCols() * cellSize, engine.getBoard().getRows() * cellSize));
     }
@@ -47,16 +48,18 @@ public class GamePanel extends JPanel {
                 g.drawRect(x, y, cellSize, cellSize);
             }
         }
-        int playerX = engine.getPlayer().getXPosition() * cellSize;
-        int playerY = engine.getPlayer().getYPosition() * cellSize;
-        g.drawImage(knightSprite,playerX,playerY,cellSize,cellSize,null);
 
         engine.getListOfEnemies().forEach(enemy -> {
             int enemyX = enemy.getXPosition() * cellSize;
             int enemyY = enemy.getYPosition() * cellSize;
-            BufferedImage sprite = enemy.isAlive()? fireSprite : fireSplashSprite;
-            g.drawImage(sprite,enemyX,enemyY,cellSize,cellSize,null);
+            BufferedImage enemySprite = enemy.isAlive()? fireSprite : fireSplashSprite;
+            g.drawImage(enemySprite,enemyX,enemyY,cellSize,cellSize,null);
         });
+
+        int playerX = engine.getPlayer().getXPosition() * cellSize;
+        int playerY = engine.getPlayer().getYPosition() * cellSize;
+        BufferedImage playerSprite = engine.getPlayer().isAlive()? knightSprite : knightDeathSprite;
+        g.drawImage(playerSprite,playerX,playerY,cellSize,cellSize,null);
     }
 
     private void setCellSprite(Cell cell){

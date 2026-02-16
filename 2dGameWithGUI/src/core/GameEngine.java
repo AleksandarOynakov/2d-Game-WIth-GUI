@@ -33,14 +33,18 @@ public class GameEngine {
     }
 
     public void movePlayer(int rowDirection, int colDirection) {
+        spawnEnemy();
+        moveEnemies();
+
         int newRow = character.getYPosition() + rowDirection;
         int newCol = character.getXPosition() + colDirection;
 
         if (board.isWalkable(newRow, newCol)) {
             character.moveTo(newRow, newCol);
+            if(listOfEnemies.stream().anyMatch(enemy -> enemy.getYPosition() == newRow && enemy.getXPosition() == newCol)){
+                character.setIsAlive(false);
+            }
         }
-        spawnEnemy();
-        moveEnemies();
     }
 
     private void spawnEnemy(){

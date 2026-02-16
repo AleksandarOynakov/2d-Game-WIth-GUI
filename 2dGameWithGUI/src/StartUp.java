@@ -1,6 +1,6 @@
 import core.Board;
-import View.GameFrame;
-import View.GamePanel;
+import view.GameFrame;
+import view.GamePanel;
 import core.GameEngine;
 import core.input.InputHandler;
 import models.Player;

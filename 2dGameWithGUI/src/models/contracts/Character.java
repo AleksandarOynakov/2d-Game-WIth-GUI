@@ -5,4 +5,6 @@ public interface Character {
     int getYPosition();
 
     void moveTo(int row, int col);
+    boolean isAlive();
+    void setIsAlive(boolean value);
 }
