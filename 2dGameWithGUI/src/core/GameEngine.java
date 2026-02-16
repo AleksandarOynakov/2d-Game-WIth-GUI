@@ -50,7 +50,6 @@ public class GameEngine {
     }
 
     private void moveEnemies() {
-
         Iterator<Enemy> iterator = listOfEnemies.iterator();
 
         while (iterator.hasNext()) {
@@ -59,8 +58,12 @@ public class GameEngine {
             int newRow = enemy.getYPosition() + 1;
             int currentCol = enemy.getXPosition();
 
+            if(newRow == board.getRows() -1){
+                enemy.setIsAlive(false);
+            }
+
             if (newRow >= board.getRows()) {
-                iterator.remove();   // SAFE REMOVE
+                iterator.remove();
             } else {
                 enemy.moveTo(newRow, currentCol);
             }
