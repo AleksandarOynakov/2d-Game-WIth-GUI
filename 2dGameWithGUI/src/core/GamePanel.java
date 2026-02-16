@@ -1,6 +1,7 @@
 package core;
 
-import core.enums.CellType;
+import models.enums.CellType;
+import models.Cell;
 import utils.ImageLoader;
 
 import javax.swing.*;

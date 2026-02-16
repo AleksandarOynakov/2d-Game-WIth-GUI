@@ -1,4 +1,4 @@
-package core.enums;
+package models.enums;
 
 public enum CellType {
     WALL,

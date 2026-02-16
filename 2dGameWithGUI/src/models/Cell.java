@@ -1,6 +1,6 @@
-package core;
+package models;
 
-import core.enums.CellType;
+import models.enums.CellType;
 
 import java.awt.image.BufferedImage;
 
