@@ -69,9 +69,4 @@ burning knight sprite, and transparent entity sprites.
 3. Mark the `resources` folder as **Resources Root**
 4. Run `StartUp.java`
 
-## Learning Goals
-
-This project focuses on clean architecture in small-scale applications, separation of game logic and rendering, Java
-Swing rendering pipeline understanding, object-oriented design principles, and game development fundamentals in Java.
-
 ![img.png](img.png)
