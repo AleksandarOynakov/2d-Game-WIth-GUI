@@ -3,15 +3,15 @@ import View.GameFrame;
 import View.GamePanel;
 import core.GameEngine;
 import core.input.InputHandler;
-import models.PlayerImpl;
-import models.contracts.Player;
+import models.Player;
+import models.contracts.Character;
 
 public class StartUp {
     public static void main(String[] args) {
         Board board = new Board();
-        Player player = new PlayerImpl(5, 5);
+        Character character = new Player(5, 5);
 
-        GameEngine engine = new GameEngine(board, player);
+        GameEngine engine = new GameEngine(board, character);
 
         GamePanel panel = new GamePanel(engine);
         panel.addKeyListener(new InputHandler(engine,panel));

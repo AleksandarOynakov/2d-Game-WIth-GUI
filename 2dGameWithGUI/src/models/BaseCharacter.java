@@ -1,12 +1,12 @@
 package models;
 
-import models.contracts.Player;
+import models.contracts.Character;
 
-public class PlayerImpl implements Player {
+public abstract class BaseCharacter implements Character {
     private int x;
     private int y;
 
-    public PlayerImpl(int x, int y){
+    public BaseCharacter(int x, int y){
         this.x = x;
         this.y = y;
     }

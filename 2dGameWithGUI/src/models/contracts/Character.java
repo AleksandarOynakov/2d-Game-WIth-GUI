@@ -1,6 +1,6 @@
 package models.contracts;
 
-public interface Player {
+public interface Character {
     int getXPosition();
     int getYPosition();
 

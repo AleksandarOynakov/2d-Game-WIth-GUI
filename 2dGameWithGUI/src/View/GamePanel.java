@@ -3,7 +3,6 @@ package View;
 import core.Board;
 import core.GameEngine;
 import models.Cell;
-import models.contracts.Player;
 import utils.ImageLoader;
 
 import javax.swing.*;
@@ -16,6 +15,7 @@ public class GamePanel extends JPanel {
     private final BufferedImage wallSprite;
     private final BufferedImage grassSprite;
     private final BufferedImage portalSprite;
+    private final BufferedImage fireSprite;
     private final BufferedImage knightSprite;
 
     public GamePanel(GameEngine engine) {
@@ -24,6 +24,7 @@ public class GamePanel extends JPanel {
         wallSprite = ImageLoader.load("/textures/Wall.png");
         grassSprite = ImageLoader.load("/textures/Grass.png");
         portalSprite = ImageLoader.load("/textures/Portal.png");
+        fireSprite = ImageLoader.load("/textures/Fire.png");
         knightSprite = ImageLoader.load("/textures/Knight.png");
         setPreferredSize(new Dimension(engine.getBoard().getCols() * cellSize, engine.getBoard().getRows() * cellSize));
     }
@@ -47,6 +48,12 @@ public class GamePanel extends JPanel {
         int playerX = engine.getPlayer().getXPosition() * cellSize;
         int playerY = engine.getPlayer().getYPosition() * cellSize;
         g.drawImage(knightSprite,playerX,playerY,cellSize,cellSize,null);
+
+        engine.getListOfEnemies().forEach(enemy -> {
+            int enemyX = enemy.getXPosition() * cellSize;
+            int enemyY = enemy.getYPosition() * cellSize;
+            g.drawImage(fireSprite,enemyX,enemyY,cellSize,cellSize,null);
+        });
     }
 
     private void setCellSprite(Cell cell){
