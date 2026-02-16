@@ -1,6 +1,5 @@
 package core;
 
-import drawers.GameFrame;
 import models.Cell;
 import models.enums.CellType;
 import utils.ImageLoader;
@@ -8,11 +7,12 @@ import utils.ImageLoader;
 import java.awt.image.BufferedImage;
 
 public class Board {
-    private final int rows = 10;
-    private final int cols = 10;
+    private final int rows = 11;
+    private final int cols = 11;
     private final BufferedImage wall;
     private final BufferedImage grass;
     private final Cell[][] grid;
+
     public Board(){
         wall = ImageLoader.load("/textures/Wall.png");
         grass = ImageLoader.load("/textures/Grass.png");

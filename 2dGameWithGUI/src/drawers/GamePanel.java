@@ -2,20 +2,25 @@ package drawers;
 
 import core.Board;
 import models.Cell;
+import models.contracts.Character;
+import utils.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class GamePanel extends JPanel {
-    private final int cellSize = 50;
+    private final int cellSize = 100;
     private final Board board;
-    public GamePanel(Board board) {
+    private final Character player;
+    private final BufferedImage knightSprite;
+
+    public GamePanel(Board board, Character player) {
         this.board = board;
+        this.player = player;
+        knightSprite = ImageLoader.load("/textures/Knight.png");
         setPreferredSize(new Dimension(board.getCols() * cellSize, board.getRows() * cellSize));
-        setBackground(Color.gray);
     }
-
-
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -32,5 +37,8 @@ public class GamePanel extends JPanel {
                 g.drawRect(x, y, cellSize, cellSize);
             }
         }
+        int playerX = player.getXPosition() * cellSize;
+        int playerY = player.getYPosition() * cellSize;
+        g.drawImage(knightSprite,playerX,playerY,cellSize,cellSize,null);
     }
 }

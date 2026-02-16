@@ -1,5 +1,6 @@
 package models.contracts;
 
 public interface Character {
-    int[] getPosition();
+    int getXPosition();
+    int getYPosition();
 }
