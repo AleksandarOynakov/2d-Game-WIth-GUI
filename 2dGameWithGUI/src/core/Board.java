@@ -1,6 +1,10 @@
 package core;
 
+import drawers.GameFrame;
+import drawers.GamePanel;
 import models.Cell;
+import models.PlayerImpl;
+import models.contracts.Character;
 import models.enums.CellType;
 import utils.ImageLoader;
 
@@ -11,6 +15,8 @@ public class Board {
     private final int cols = 11;
     private final BufferedImage wall;
     private final BufferedImage grass;
+    private GamePanel panel;
+    private Character player;
     private final Cell[][] grid;
 
     public Board(){
@@ -18,6 +24,9 @@ public class Board {
         grass = ImageLoader.load("/textures/Grass.png");
         grid = new Cell[rows][cols];
         initGrid();
+        this.player = new PlayerImpl(5,5);
+        panel = new GamePanel(grid,player);
+        new GameFrame(panel);
     }
 
     private void initGrid() {
@@ -30,18 +39,6 @@ public class Board {
                 }
             }
         }
-    }
-
-    public Cell[][] getGrid(){
-        return grid;
-    }
-
-    public int getRows(){
-        return rows;
-    }
-
-    public int getCols(){
-        return cols;
     }
 }
 
