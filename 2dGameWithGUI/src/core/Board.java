@@ -9,13 +9,9 @@ import java.awt.image.BufferedImage;
 public class Board {
     private final int rows = 11;
     private final int cols = 11;
-    private final BufferedImage wall;
-    private final BufferedImage grass;
     private final Cell[][] grid;
 
     public Board(){
-        wall = ImageLoader.load("/textures/Wall.png");
-        grass = ImageLoader.load("/textures/Grass.png");
         grid = new Cell[rows][cols];
         initGrid();
     }
@@ -24,9 +20,9 @@ public class Board {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 if (r == 0 || r == rows - 1 || c == 0 || c == cols - 1) {
-                    grid[r][c] = new Cell(CellType.WALL, false, wall);
+                    grid[r][c] = new Cell(CellType.WALL, false, null);
                 } else {
-                    grid[r][c] = new Cell(CellType.GRASS, true, grass);
+                    grid[r][c] = new Cell(CellType.GRASS, true, null);
                 }
             }
         }
@@ -42,6 +38,14 @@ public class Board {
 
     public int getCols(){
         return cols;
+    }
+
+    public Cell getCell(int row, int col){
+        return grid[row][col];
+    }
+
+    public boolean isWalkable(int row, int cols){
+        return grid[row][cols].isWalkable();
     }
 }
 

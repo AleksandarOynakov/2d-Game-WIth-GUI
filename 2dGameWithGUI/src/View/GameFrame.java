@@ -1,4 +1,4 @@
-package drawers;
+package View;
 
 import javax.swing.*;
 

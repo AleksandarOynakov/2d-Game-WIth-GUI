@@ -1,8 +1,8 @@
 package models;
 
-import models.contracts.Character;
+import models.contracts.Player;
 
-public class PlayerImpl implements Character {
+public class PlayerImpl implements Player {
     private int x;
     private int y;
 
@@ -19,5 +19,11 @@ public class PlayerImpl implements Character {
     @Override
     public int getYPosition() {
         return y;
+    }
+
+    @Override
+    public void moveTo(int row, int col) {
+        this.x = col;
+        this.y = row;
     }
 }

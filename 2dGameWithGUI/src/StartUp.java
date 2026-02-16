@@ -1,14 +1,21 @@
 import core.Board;
-import drawers.GameFrame;
-import drawers.GamePanel;
+import View.GameFrame;
+import View.GamePanel;
+import core.GameEngine;
+import core.input.InputHandler;
 import models.PlayerImpl;
-import models.contracts.Character;
+import models.contracts.Player;
 
 public class StartUp {
     public static void main(String[] args) {
         Board board = new Board();
-        Character player = new PlayerImpl(5,5);
-        GamePanel panel = new GamePanel(board,player);
+        Player player = new PlayerImpl(5, 5);
+
+        GameEngine engine = new GameEngine(board, player);
+
+        GamePanel panel = new GamePanel(engine);
+        panel.addKeyListener(new InputHandler(engine,panel));
         new GameFrame(panel);
+        panel.requestFocusInWindow();
     }
 }
