@@ -15,6 +15,7 @@ public class GamePanel extends JPanel {
     private final GameEngine engine;
     private final BufferedImage wallSprite;
     private final BufferedImage grassSprite;
+    private final BufferedImage portalSprite;
     private final BufferedImage knightSprite;
 
     public GamePanel(GameEngine engine) {
@@ -22,6 +23,7 @@ public class GamePanel extends JPanel {
 
         wallSprite = ImageLoader.load("/textures/Wall.png");
         grassSprite = ImageLoader.load("/textures/Grass.png");
+        portalSprite = ImageLoader.load("/textures/Portal.png");
         knightSprite = ImageLoader.load("/textures/Knight.png");
         setPreferredSize(new Dimension(engine.getBoard().getCols() * cellSize, engine.getBoard().getRows() * cellSize));
     }
@@ -51,6 +53,7 @@ public class GamePanel extends JPanel {
         switch (cell.getType()){
             case WALL -> cell.setSprite(wallSprite);
             case GRASS -> cell.setSprite(grassSprite);
+            case PORTAL -> cell.setSprite(portalSprite);
         }
     }
 }

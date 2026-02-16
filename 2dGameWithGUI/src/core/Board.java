@@ -20,7 +20,11 @@ public class Board {
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
                 if (r == 0 || r == rows - 1 || c == 0 || c == cols - 1) {
-                    grid[r][c] = new Cell(CellType.WALL, false, null);
+                    if(r == 0 && c != 0 && c != cols -1){
+                        grid[r][c] = new Cell(CellType.PORTAL,false,null);
+                    } else {
+                        grid[r][c] = new Cell(CellType.WALL, false, null);
+                    }
                 } else {
                     grid[r][c] = new Cell(CellType.GRASS, true, null);
                 }
