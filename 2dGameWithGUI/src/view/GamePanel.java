@@ -147,7 +147,6 @@ public class GamePanel extends JPanel {
         return (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
     }
 
-
     private void drawText(Graphics2D g2, String text, int textX, int textY) {
         g2.setColor(new Color(0, 0, 0, 170));
         g2.fillRect(0, 0, getWidth(), getHeight());

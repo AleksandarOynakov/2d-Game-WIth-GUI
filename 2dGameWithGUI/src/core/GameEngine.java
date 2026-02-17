@@ -4,6 +4,7 @@ package core;
 import models.Door;
 import models.Enemy;
 import models.Key;
+import models.contracts.Objective;
 import models.contracts.Player;
 
 
@@ -79,10 +80,10 @@ public class GameEngine {
     public void update() {
         spawnEnemy();
         moveEnemies();
-        checkCollision();
+        checkCollisionWithEnemy();
     }
 
-    private void checkCollision() {
+    private void checkCollisionWithEnemy() {
         if (listOfEnemies.stream().anyMatch(enemy ->
                 enemy.getYPosition() == player.getYPosition() &&
                         enemy.getXPosition() == player.getXPosition())) {
@@ -91,21 +92,25 @@ public class GameEngine {
         }
     }
 
+    private <E extends Objective> boolean checkPlayerIsOnObj(E obj, int playerNewX, int playerNewY){
+        return obj.getXPosition() == playerNewX && obj.getYPosition() == playerNewY;
+    }
+
     public void movePlayer(int rowDirection, int colDirection) {
         int newRow = player.getYPosition() + rowDirection;
         int newCol = player.getXPosition() + colDirection;
         if (board.isWalkable(newRow, newCol)) {
             player.moveTo(newRow, newCol);
-            checkCollision();
-        }
+            checkCollisionWithEnemy();
 
-        if(key.getXPosition() == newCol && key.getYPosition() == newRow){
-            key.setCollected();
-            door.setOpen();
-        }
+            if(checkPlayerIsOnObj(key,newCol,newRow)){
+                key.setCollected();
+                door.setOpen();
+            }
 
-        if(door.getXPosition() == newCol && door.getYPosition() == newRow && key.isCollected() && !gameOver){
-            levelCompleted = true;
+            if(checkPlayerIsOnObj(door,newCol,newRow) && key.isCollected() && !gameOver){
+                levelCompleted = true;
+            }
         }
     }
 
