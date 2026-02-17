@@ -12,13 +12,13 @@ import javax.swing.Timer;
 public class GamePanel extends JPanel {
     private final int cellSize = 100;
     private final GameEngine engine;
-    private final BufferedImage wallSprite;
-    private final BufferedImage grassSprite;
-    private final BufferedImage portalSprite;
-    private final BufferedImage fireSprite;
-    private final BufferedImage fireSplashSprite;
-    private final BufferedImage knightDeathSprite;
-    private final BufferedImage knightSprite;
+    private BufferedImage wallSprite;
+    private BufferedImage grassSprite;
+    private BufferedImage portalSprite;
+    private BufferedImage fireSprite;
+    private BufferedImage fireSplashSprite;
+    private BufferedImage knightDeathSprite;
+    private BufferedImage knightSprite;
     private final JButton restartButton;
     private Timer gameUpdateTimer;
 
@@ -26,13 +26,7 @@ public class GamePanel extends JPanel {
     public GamePanel(GameEngine engine) {
         this.engine = engine;
 
-        wallSprite = ImageLoader.load("/textures/Wall.png");
-        grassSprite = ImageLoader.load("/textures/Grass.png");
-        portalSprite = ImageLoader.load("/textures/Portal.png");
-        fireSprite = ImageLoader.load("/textures/Fire.png");
-        fireSplashSprite = ImageLoader.load("/textures/FireSplash.png");
-        knightDeathSprite = ImageLoader.load("/textures/KnightDeath.png");
-        knightSprite = ImageLoader.load("/textures/Knight.png");
+        loadSprites();
 
         setPreferredSize(new Dimension(engine.getBoard().getCols() * cellSize, engine.getBoard().getRows() * cellSize));
         setFocusable(true);
@@ -45,13 +39,23 @@ public class GamePanel extends JPanel {
         add(restartButton);
 
         gameUpdateTimer = new Timer(1000, e -> {
-            if(!engine.isGameOver()){
+            if (!engine.isGameOver()) {
                 engine.update();
                 repaint();
             }
         });
 
         gameUpdateTimer.start();
+    }
+
+    private void loadSprites() {
+        wallSprite = ImageLoader.load("/textures/Wall.png");
+        grassSprite = ImageLoader.load("/textures/Grass.png");
+        portalSprite = ImageLoader.load("/textures/Portal.png");
+        fireSprite = ImageLoader.load("/textures/Fire.png");
+        fireSplashSprite = ImageLoader.load("/textures/FireSplash.png");
+        knightDeathSprite = ImageLoader.load("/textures/KnightDeath.png");
+        knightSprite = ImageLoader.load("/textures/Knight.png");
     }
 
     @Override
