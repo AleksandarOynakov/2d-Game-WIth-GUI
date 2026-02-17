@@ -1,12 +1,12 @@
 package models;
 
-import models.contracts.Character;
+import models.contracts.Unit;
 
-public abstract class BaseCharacter implements Character {
+public abstract class BaseUnit implements Unit {
     private int x;
     private int y;
     private boolean isAlive;
-    protected BaseCharacter(int x, int y){
+    protected BaseUnit(int x, int y){
         this.x = x;
         this.y = y;
         this.isAlive = true;

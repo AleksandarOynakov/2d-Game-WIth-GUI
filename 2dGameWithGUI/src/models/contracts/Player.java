@@ -1,5 +1,5 @@
 package models.contracts;
 
-public interface Player extends Character{
+public interface Player extends Unit {
    void resetPosition();
 }
