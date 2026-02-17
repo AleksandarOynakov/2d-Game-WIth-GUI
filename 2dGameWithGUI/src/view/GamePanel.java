@@ -155,24 +155,14 @@ public class GamePanel extends JPanel {
         g2.drawString(text, textX, textY);
     }
 
-    private void makeRestartButtonVisible(int textY) {
+    private <E extends JButton> void makeButtonVisible(int textY, E button){
         int buttonWidth = 160;
         int buttonHeight = 40;
         int buttonX = (getWidth() - buttonWidth) / 2;
         int buttonY = textY + 40;
 
-        restartButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-        restartButton.setVisible(true);
-    }
-
-    private void makeContinueButtonVisible(int textY) {
-        int buttonWidth = 160;
-        int buttonHeight = 40;
-        int buttonX = (getWidth() - buttonWidth) / 2;
-        int buttonY = textY + 40;
-
-        continueButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-        continueButton.setVisible(true);
+        button.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
+        button.setVisible(true);
     }
 
     @Override
@@ -201,9 +191,9 @@ public class GamePanel extends JPanel {
             drawText(g2, text, textX, textY);
 
             if (engine.isGameOver()) {
-                makeRestartButtonVisible(textY);
+                makeButtonVisible(textY,restartButton);
             } else {
-                makeContinueButtonVisible(textY);
+                makeButtonVisible(textY,continueButton);
             }
         }
     }
