@@ -1,10 +1,11 @@
 package core;
 
-import models.Cell;
+
 import models.Door;
 import models.Enemy;
+import models.Key;
 import models.contracts.Player;
-import models.enums.CellType;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ public class GameEngine {
     private final Board board;
     private final Player player;
     private final Door door;
+    private final Key key;
     private final List<Enemy> listOfEnemies;
     private boolean gameOver;
 
@@ -23,6 +25,7 @@ public class GameEngine {
         this.board = board;
         this.player = player;
         this.door = new Door(board.getRows(), board.getCols());
+        this.key = new Key(board.getRows(), board.getCols());
         listOfEnemies = new ArrayList<>();
         this.gameOver = false;
     }
@@ -35,8 +38,12 @@ public class GameEngine {
         return player;
     }
 
-    public Door getDoor(){
+    public Door getDoor() {
         return door;
+    }
+
+    public Key getKey() {
+        return key;
     }
 
     public List<Enemy> getListOfEnemies() {
@@ -57,6 +64,7 @@ public class GameEngine {
         player.resetPosition();
         door.generatePosition();
         door.setClosed();
+        key.generatePosition();
         gameOver = false;
     }
 
@@ -81,6 +89,11 @@ public class GameEngine {
         if (board.isWalkable(newRow, newCol)) {
             player.moveTo(newRow, newCol);
             checkCollision();
+        }
+
+        if(key.getXPosition() == newCol && key.getYPosition() == newRow){
+            key.setCollected();
+            door.setOpen();
         }
     }
 

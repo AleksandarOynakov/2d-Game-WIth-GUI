@@ -2,11 +2,16 @@ package view;
 
 import core.GameEngine;
 import models.Cell;
+import models.Door;
+import models.Key;
+import models.contracts.Locatable;
+import models.contracts.Player;
 import utils.ImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.function.Function;
 import javax.swing.Timer;
 
 public class GamePanel extends JPanel {
@@ -21,6 +26,7 @@ public class GamePanel extends JPanel {
     private BufferedImage knightSprite;
     private BufferedImage doorClosedSprite;
     private BufferedImage doorOpenSprite;
+    private BufferedImage keySprite;
     private JButton restartButton;
     private Timer gameUpdateTimer;
 
@@ -47,9 +53,10 @@ public class GamePanel extends JPanel {
         knightSprite = ImageLoader.load("/textures/Knight.png");
         doorClosedSprite = ImageLoader.load("/textures/DoorClosed.png");
         doorOpenSprite = ImageLoader.load("/textures/DoorOpen.png");
+        keySprite = ImageLoader.load("/textures/Key.png");
     }
 
-    private void initTimer(){
+    private void initTimer() {
         gameUpdateTimer = new Timer(500, e -> {
             if (!engine.isGameOver()) {
                 engine.update();
@@ -67,7 +74,7 @@ public class GamePanel extends JPanel {
         repaint();
     }
 
-    private void addRestartButton(){
+    private void addRestartButton() {
         restartButton = new JButton("Restart");
         restartButton.setVisible(false);
         restartButton.addActionListener(e -> restartGame());
@@ -83,7 +90,7 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void drawPlayground(Graphics g){
+    private void drawPlayground(Graphics g) {
         for (int row = 0; row < engine.getBoard().getRows(); row++) {
             for (int col = 0; col < engine.getBoard().getCols(); col++) {
                 int x = col * cellSize;
@@ -99,7 +106,7 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void drawEnemies(Graphics g){
+    private void drawEnemies(Graphics g) {
         engine.getListOfEnemies().forEach(enemy -> {
             int enemyX = enemy.getXPosition() * cellSize;
             int enemyY = enemy.getYPosition() * cellSize;
@@ -108,18 +115,11 @@ public class GamePanel extends JPanel {
         });
     }
 
-    private void drawPlayer(Graphics g){
-        int playerX = engine.getPlayer().getXPosition() * cellSize;
-        int playerY = engine.getPlayer().getYPosition() * cellSize;
-        BufferedImage playerSprite = engine.getPlayer().isAlive() ? knightSprite : knightDeathSprite;
-        g.drawImage(playerSprite, playerX, playerY, cellSize, cellSize, null);
-    }
-
-    private void drawDoor(Graphics g){
-        int doorX = engine.getDoor().getXPosition() * cellSize;
-        int doorY = engine.getDoor().getYPosition() * cellSize;
-        BufferedImage doorSprite = engine.getDoor().isOpen() ? doorOpenSprite : doorClosedSprite;
-        g.drawImage(doorSprite, doorX, doorY, cellSize, cellSize, null);
+    private <E extends Locatable> void drawObject(Graphics g, E obj, Function<E, Boolean> checkState, BufferedImage spriteTrue, BufferedImage spriteFalse) {
+        int positionX = obj.getXPosition() * cellSize;
+        int positionY = obj.getYPosition() * cellSize;
+        BufferedImage sprite = checkState.apply(obj) ? spriteTrue : spriteFalse;
+        g.drawImage(sprite, positionX, positionY, cellSize, cellSize, null);
     }
 
     private int calculateGameOverTextX(int textWidth) {
@@ -131,14 +131,14 @@ public class GamePanel extends JPanel {
     }
 
 
-    private void drawText(Graphics2D g2, String text, int textX, int textY){
+    private void drawText(Graphics2D g2, String text, int textX, int textY) {
         g2.setColor(new Color(0, 0, 0, 170));
         g2.fillRect(0, 0, getWidth(), getHeight());
         g2.setColor(Color.RED);
         g2.drawString(text, textX, textY);
     }
 
-    private void makeRestartButtonVisible(int textY){
+    private void makeRestartButtonVisible(int textY) {
         int buttonWidth = 160;
         int buttonHeight = 40;
         int buttonX = (getWidth() - buttonWidth) / 2;
@@ -153,9 +153,10 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
 
         drawPlayground(g);
-        drawDoor(g);
+        drawObject(g, engine.getDoor(), Door::isOpen, doorOpenSprite, doorClosedSprite);
+        drawObject(g, engine.getKey(), Key::isCollected, null, keySprite);
         drawEnemies(g);
-        drawPlayer(g);
+        drawObject(g, engine.getPlayer(), Player::isAlive, knightSprite,knightDeathSprite);
 
 
         if (engine.isGameOver()) {
@@ -170,7 +171,7 @@ public class GamePanel extends JPanel {
             int textX = calculateGameOverTextX(textWidth);
             int textY = calculateGameOverTextY(fm);
 
-            drawText(g2,text,textX,textY);
+            drawText(g2, text, textX, textY);
             makeRestartButtonVisible(textY);
         }
     }

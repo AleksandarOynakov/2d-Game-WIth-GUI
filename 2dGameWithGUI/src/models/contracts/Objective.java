@@ -1,7 +1,5 @@
 package models.contracts;
 
-public interface Objective {
-     int getXPosition();
-     int getYPosition();
+public interface Objective extends Locatable {
      void generatePosition();
 }
