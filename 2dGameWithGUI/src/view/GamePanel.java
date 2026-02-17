@@ -28,7 +28,9 @@ public class GamePanel extends JPanel {
     private BufferedImage doorOpenSprite;
     private BufferedImage keySprite;
     private JButton restartButton;
+    private JButton continueButton;
     private Timer gameUpdateTimer;
+    private int currentDelay = 500;
 
     public GamePanel(GameEngine engine) {
         this.engine = engine;
@@ -40,6 +42,8 @@ public class GamePanel extends JPanel {
         requestFocusInWindow();
 
         addRestartButton();
+        addContinueButton();
+
         initTimer();
     }
 
@@ -57,7 +61,7 @@ public class GamePanel extends JPanel {
     }
 
     private void initTimer() {
-        gameUpdateTimer = new Timer(500, e -> {
+        gameUpdateTimer = new Timer(currentDelay, e -> {
             if (!engine.isGameOver()) {
                 engine.update();
                 repaint();
@@ -69,6 +73,7 @@ public class GamePanel extends JPanel {
     private void restartGame() {
         engine.reset();
         restartButton.setVisible(false);
+        continueButton.setVisible(false);
         requestFocusInWindow();
         gameUpdateTimer.start();
         repaint();
@@ -80,6 +85,18 @@ public class GamePanel extends JPanel {
         restartButton.addActionListener(e -> restartGame());
         restartButton.setHorizontalAlignment(SwingConstants.CENTER);
         add(restartButton);
+    }
+
+    private void addContinueButton(){
+        continueButton = new JButton("Continue");
+        continueButton.setVisible(false);
+        continueButton.addActionListener(e -> {
+            currentDelay = Math.max(100, currentDelay - 50);
+            gameUpdateTimer.setDelay(currentDelay);
+            restartGame();
+        });
+        continueButton.setHorizontalAlignment(SwingConstants.CENTER);
+        add(continueButton);
     }
 
     private void setCellSprite(Cell cell) {
@@ -148,6 +165,16 @@ public class GamePanel extends JPanel {
         restartButton.setVisible(true);
     }
 
+    private void makeContinueButtonVisible(int textY) {
+        int buttonWidth = 160;
+        int buttonHeight = 40;
+        int buttonX = (getWidth() - buttonWidth) / 2;
+        int buttonY = textY + 40;
+
+        continueButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
+        continueButton.setVisible(true);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -159,11 +186,11 @@ public class GamePanel extends JPanel {
         drawObject(g, engine.getPlayer(), Player::isAlive, knightSprite,knightDeathSprite);
 
 
-        if (engine.isGameOver()) {
+        if (engine.isGameOver() || engine.isLevelCompleted()) {
             gameUpdateTimer.stop();
 
             Graphics2D g2 = (Graphics2D) g;
-            String text = "GAME OVER";
+            String text = engine.isGameOver()? "GAME OVER" : "LEVEL COMPLETED!";
             g2.setFont(new Font("Arial", Font.BOLD, 48));
             FontMetrics fm = g2.getFontMetrics();
 
@@ -172,7 +199,12 @@ public class GamePanel extends JPanel {
             int textY = calculateGameOverTextY(fm);
 
             drawText(g2, text, textX, textY);
-            makeRestartButtonVisible(textY);
+
+            if (engine.isGameOver()) {
+                makeRestartButtonVisible(textY);
+            } else {
+                makeContinueButtonVisible(textY);
+            }
         }
     }
 }

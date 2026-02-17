@@ -20,6 +20,7 @@ public class GameEngine {
     private final Key key;
     private final List<Enemy> listOfEnemies;
     private boolean gameOver;
+    private boolean levelCompleted;
 
     public GameEngine(Board board, Player player) {
         this.board = board;
@@ -28,6 +29,7 @@ public class GameEngine {
         this.key = new Key(board.getRows(), board.getCols());
         listOfEnemies = new ArrayList<>();
         this.gameOver = false;
+        this.levelCompleted = false;
     }
 
     public Board getBoard() {
@@ -54,6 +56,10 @@ public class GameEngine {
         this.gameOver = value;
     }
 
+    public boolean isLevelCompleted(){
+        return levelCompleted;
+    }
+
     public boolean isGameOver() {
         return gameOver;
     }
@@ -65,7 +71,9 @@ public class GameEngine {
         door.generatePosition();
         door.setClosed();
         key.generatePosition();
+        key.setNotCollected();
         gameOver = false;
+        levelCompleted = false;
     }
 
     public void update() {
@@ -94,6 +102,10 @@ public class GameEngine {
         if(key.getXPosition() == newCol && key.getYPosition() == newRow){
             key.setCollected();
             door.setOpen();
+        }
+
+        if(door.getXPosition() == newCol && door.getYPosition() == newRow && key.isCollected() && !gameOver){
+            levelCompleted = true;
         }
     }
 
