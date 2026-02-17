@@ -19,9 +19,8 @@ public class GamePanel extends JPanel {
     private BufferedImage fireSplashSprite;
     private BufferedImage knightDeathSprite;
     private BufferedImage knightSprite;
-    private final JButton restartButton;
+    private JButton restartButton;
     private Timer gameUpdateTimer;
-
 
     public GamePanel(GameEngine engine) {
         this.engine = engine;
@@ -32,20 +31,8 @@ public class GamePanel extends JPanel {
         setFocusable(true);
         requestFocusInWindow();
 
-        restartButton = new JButton("Restart");
-        restartButton.setVisible(false);
-        restartButton.addActionListener(e -> restartGame());
-        restartButton.setHorizontalAlignment(SwingConstants.CENTER);
-        add(restartButton);
-
-        gameUpdateTimer = new Timer(1000, e -> {
-            if (!engine.isGameOver()) {
-                engine.update();
-                repaint();
-            }
-        });
-
-        gameUpdateTimer.start();
+        addRestartButton();
+        initTimer();
     }
 
     private void loadSprites() {
@@ -58,9 +45,41 @@ public class GamePanel extends JPanel {
         knightSprite = ImageLoader.load("/textures/Knight.png");
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    private void initTimer(){
+        gameUpdateTimer = new Timer(500, e -> {
+            if (!engine.isGameOver()) {
+                engine.update();
+                repaint();
+            }
+        });
+        gameUpdateTimer.start();
+    }
+
+    private void restartGame() {
+        engine.reset();
+        restartButton.setVisible(false);
+        requestFocusInWindow();
+        gameUpdateTimer.start();
+        repaint();
+    }
+
+    private void addRestartButton(){
+        restartButton = new JButton("Restart");
+        restartButton.setVisible(false);
+        restartButton.addActionListener(e -> restartGame());
+        restartButton.setHorizontalAlignment(SwingConstants.CENTER);
+        add(restartButton);
+    }
+
+    private void setCellSprite(Cell cell) {
+        switch (cell.getType()) {
+            case WALL -> cell.setSprite(wallSprite);
+            case GRASS -> cell.setSprite(grassSprite);
+            case PORTAL -> cell.setSprite(portalSprite);
+        }
+    }
+
+    private void drawPlayground(Graphics g){
         for (int row = 0; row < engine.getBoard().getRows(); row++) {
             for (int col = 0; col < engine.getBoard().getCols(); col++) {
                 int x = col * cellSize;
@@ -74,62 +93,73 @@ public class GamePanel extends JPanel {
                 g.drawRect(x, y, cellSize, cellSize);
             }
         }
+    }
 
+    private void drawEnemies(Graphics g){
         engine.getListOfEnemies().forEach(enemy -> {
             int enemyX = enemy.getXPosition() * cellSize;
             int enemyY = enemy.getYPosition() * cellSize;
             BufferedImage enemySprite = enemy.isAlive() ? fireSprite : fireSplashSprite;
             g.drawImage(enemySprite, enemyX, enemyY, cellSize, cellSize, null);
         });
+    }
 
+    private void drawPlayer(Graphics g){
         int playerX = engine.getPlayer().getXPosition() * cellSize;
         int playerY = engine.getPlayer().getYPosition() * cellSize;
         BufferedImage playerSprite = engine.getPlayer().isAlive() ? knightSprite : knightDeathSprite;
         g.drawImage(playerSprite, playerX, playerY, cellSize, cellSize, null);
+    }
+
+    private int calculateGameOverTextX(int textWidth) {
+        return (getWidth() - textWidth) / 2;
+    }
+
+    private int calculateGameOverTextY(FontMetrics fm) {
+        return (getHeight() - fm.getHeight()) / 2 + fm.getAscent();
+    }
+
+
+    private void drawText(Graphics2D g2, String text, int textX, int textY){
+        g2.setColor(new Color(0, 0, 0, 170));
+        g2.fillRect(0, 0, getWidth(), getHeight());
+        g2.setColor(Color.RED);
+        g2.drawString(text, textX, textY);
+    }
+
+    private void makeRestartButtonVisible(int textY){
+        int buttonWidth = 160;
+        int buttonHeight = 40;
+        int buttonX = (getWidth() - buttonWidth) / 2;
+        int buttonY = textY + 40;
+
+        restartButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
+        restartButton.setVisible(true);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        drawPlayground(g);
+        drawEnemies(g);
+        drawPlayer(g);
+
 
         if (engine.isGameOver()) {
             gameUpdateTimer.stop();
+
             Graphics2D g2 = (Graphics2D) g;
-
-            g2.setColor(new Color(0, 0, 0, 170));
-            g2.fillRect(0, 0, getWidth(), getHeight());
-
-            g2.setColor(Color.RED);
-            g2.setFont(new Font("Arial", Font.BOLD, 48));
-
             String text = "GAME OVER";
+            g2.setFont(new Font("Arial", Font.BOLD, 48));
             FontMetrics fm = g2.getFontMetrics();
 
             int textWidth = fm.stringWidth(text);
-            int textX = (getWidth() - textWidth) / 2;
-            int textY = getHeight() / 2;
+            int textX = calculateGameOverTextX(textWidth);
+            int textY = calculateGameOverTextY(fm);
 
-            g2.drawString(text, textX, textY);
-
-            int buttonWidth = 160;
-            int buttonHeight = 40;
-            int buttonX = (getWidth() - buttonWidth) / 2;
-            int buttonY = textY + 40;
-
-            restartButton.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-            restartButton.setVisible(true);
+            drawText(g2,text,textX,textY);
+            makeRestartButtonVisible(textY);
         }
     }
-
-    private void setCellSprite(Cell cell) {
-        switch (cell.getType()) {
-            case WALL -> cell.setSprite(wallSprite);
-            case GRASS -> cell.setSprite(grassSprite);
-            case PORTAL -> cell.setSprite(portalSprite);
-        }
-    }
-
-    private void restartGame() {
-        engine.reset();
-        restartButton.setVisible(false);
-        requestFocusInWindow();
-        gameUpdateTimer.start();
-        repaint();
-    }
-
 }
