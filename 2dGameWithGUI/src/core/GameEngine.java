@@ -1,7 +1,7 @@
 package core;
 
 import models.Enemy;
-import models.contracts.Character;
+import models.contracts.Player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,38 +11,58 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameEngine {
 
     private final Board board;
-    private final Character character;
+    private final Player player;
     private final List<Enemy> listOfEnemies;
+    private boolean gameOver;
 
-    public GameEngine(Board board, Character character) {
+    public GameEngine(Board board, Player player) {
         this.board = board;
-        this.character = character;
+        this.player = player;
         listOfEnemies = new ArrayList<>();
+        this.gameOver = false;
     }
 
     public Board getBoard() {
         return board;
     }
 
-    public Character getPlayer() {
-        return character;
+    public Player getPlayer() {
+        return player;
     }
 
     public List<Enemy> getListOfEnemies(){
         return this.listOfEnemies;
     }
 
+    public void setGameOver(boolean value){
+        this.gameOver = value;
+    }
+
+    public boolean isGameOver(){
+        return gameOver;
+    }
+
+    public void reset(){
+        listOfEnemies.clear();
+        player.setIsAlive(true);
+        player.resetPosition();
+        gameOver = false;
+    }
+
+
+
     public void movePlayer(int rowDirection, int colDirection) {
         spawnEnemy();
         moveEnemies();
 
-        int newRow = character.getYPosition() + rowDirection;
-        int newCol = character.getXPosition() + colDirection;
+        int newRow = player.getYPosition() + rowDirection;
+        int newCol = player.getXPosition() + colDirection;
 
         if (board.isWalkable(newRow, newCol)) {
-            character.moveTo(newRow, newCol);
+            player.moveTo(newRow, newCol);
             if(listOfEnemies.stream().anyMatch(enemy -> enemy.getYPosition() == newRow && enemy.getXPosition() == newCol)){
-                character.setIsAlive(false);
+                player.setIsAlive(false);
+                gameOver = true;
             }
         }
     }
