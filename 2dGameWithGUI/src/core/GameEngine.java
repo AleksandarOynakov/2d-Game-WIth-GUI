@@ -30,46 +30,55 @@ public class GameEngine {
         return player;
     }
 
-    public List<Enemy> getListOfEnemies(){
+    public List<Enemy> getListOfEnemies() {
         return this.listOfEnemies;
     }
 
-    public void setGameOver(boolean value){
+    public void setGameOver(boolean value) {
         this.gameOver = value;
     }
 
-    public boolean isGameOver(){
+    public boolean isGameOver() {
         return gameOver;
     }
 
-    public void reset(){
+    public void reset() {
         listOfEnemies.clear();
         player.setIsAlive(true);
         player.resetPosition();
         gameOver = false;
     }
 
-
-
-    public void movePlayer(int rowDirection, int colDirection) {
+    public void update() {
         spawnEnemy();
         moveEnemies();
+        checkCollision();
+    }
+
+    private void checkCollision() {
+        if (listOfEnemies.stream().anyMatch(enemy ->
+                enemy.getYPosition() == player.getYPosition() &&
+                        enemy.getXPosition() == player.getXPosition())) {
+            player.setIsAlive(false);
+            gameOver = true;
+        }
+    }
+
+    public void movePlayer(int rowDirection, int colDirection) {
+
 
         int newRow = player.getYPosition() + rowDirection;
         int newCol = player.getXPosition() + colDirection;
 
         if (board.isWalkable(newRow, newCol)) {
             player.moveTo(newRow, newCol);
-            if(listOfEnemies.stream().anyMatch(enemy -> enemy.getYPosition() == newRow && enemy.getXPosition() == newCol)){
-                player.setIsAlive(false);
-                gameOver = true;
-            }
+            checkCollision();
         }
     }
 
-    private void spawnEnemy(){
+    private void spawnEnemy() {
         int randomX = ThreadLocalRandom.current().nextInt(1, board.getRows() - 1);
-        Enemy fire = new Enemy(randomX,0);
+        Enemy fire = new Enemy(randomX, 0);
         listOfEnemies.add(fire);
     }
 
@@ -82,7 +91,7 @@ public class GameEngine {
             int newRow = enemy.getYPosition() + 1;
             int currentCol = enemy.getXPosition();
 
-            if(newRow == board.getRows() -1){
+            if (newRow == board.getRows() - 1) {
                 enemy.setIsAlive(false);
             }
 

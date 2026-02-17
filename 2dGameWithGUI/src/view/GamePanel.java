@@ -7,6 +7,7 @@ import utils.ImageLoader;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import javax.swing.Timer;
 
 public class GamePanel extends JPanel {
     private final int cellSize = 100;
@@ -18,7 +19,8 @@ public class GamePanel extends JPanel {
     private final BufferedImage fireSplashSprite;
     private final BufferedImage knightDeathSprite;
     private final BufferedImage knightSprite;
-    private JButton restartButton;
+    private final JButton restartButton;
+    private Timer gameUpdateTimer;
 
 
     public GamePanel(GameEngine engine) {
@@ -41,6 +43,15 @@ public class GamePanel extends JPanel {
         restartButton.addActionListener(e -> restartGame());
         restartButton.setHorizontalAlignment(SwingConstants.CENTER);
         add(restartButton);
+
+        gameUpdateTimer = new Timer(1000, e -> {
+            if(!engine.isGameOver()){
+                engine.update();
+                repaint();
+            }
+        });
+
+        gameUpdateTimer.start();
     }
 
     @Override
@@ -73,6 +84,7 @@ public class GamePanel extends JPanel {
         g.drawImage(playerSprite, playerX, playerY, cellSize, cellSize, null);
 
         if (engine.isGameOver()) {
+            gameUpdateTimer.stop();
             Graphics2D g2 = (Graphics2D) g;
 
             g2.setColor(new Color(0, 0, 0, 170));
@@ -112,6 +124,7 @@ public class GamePanel extends JPanel {
         engine.reset();
         restartButton.setVisible(false);
         requestFocusInWindow();
+        gameUpdateTimer.start();
         repaint();
     }
 
