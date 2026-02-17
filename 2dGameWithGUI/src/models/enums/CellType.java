@@ -3,5 +3,6 @@ package models.enums;
 public enum CellType {
     WALL,
     GRASS,
-    PORTAL
+    PORTAL,
+    DOOR
 }

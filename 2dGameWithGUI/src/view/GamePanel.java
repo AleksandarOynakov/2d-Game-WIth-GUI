@@ -19,6 +19,8 @@ public class GamePanel extends JPanel {
     private BufferedImage fireSplashSprite;
     private BufferedImage knightDeathSprite;
     private BufferedImage knightSprite;
+    private BufferedImage doorClosedSprite;
+    private BufferedImage doorOpenSprite;
     private JButton restartButton;
     private Timer gameUpdateTimer;
 
@@ -43,6 +45,8 @@ public class GamePanel extends JPanel {
         fireSplashSprite = ImageLoader.load("/textures/FireSplash.png");
         knightDeathSprite = ImageLoader.load("/textures/KnightDeath.png");
         knightSprite = ImageLoader.load("/textures/Knight.png");
+        doorClosedSprite = ImageLoader.load("/textures/DoorClosed.png");
+        doorOpenSprite = ImageLoader.load("/textures/DoorOpen.png");
     }
 
     private void initTimer(){
@@ -111,6 +115,13 @@ public class GamePanel extends JPanel {
         g.drawImage(playerSprite, playerX, playerY, cellSize, cellSize, null);
     }
 
+    private void drawDoor(Graphics g){
+        int doorX = engine.getDoor().getXPosition() * cellSize;
+        int doorY = engine.getDoor().getYPosition() * cellSize;
+        BufferedImage doorSprite = engine.getDoor().isOpen() ? doorOpenSprite : doorClosedSprite;
+        g.drawImage(doorSprite, doorX, doorY, cellSize, cellSize, null);
+    }
+
     private int calculateGameOverTextX(int textWidth) {
         return (getWidth() - textWidth) / 2;
     }
@@ -142,6 +153,7 @@ public class GamePanel extends JPanel {
         super.paintComponent(g);
 
         drawPlayground(g);
+        drawDoor(g);
         drawEnemies(g);
         drawPlayer(g);
 

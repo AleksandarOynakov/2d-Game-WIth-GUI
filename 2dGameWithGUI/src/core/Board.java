@@ -1,14 +1,17 @@
 package core;
 
 import models.Cell;
+import models.Door;
 import models.enums.CellType;
 import utils.ImageLoader;
 
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Board {
     private final int rows = 11;
     private final int cols = 11;
+    private Door door;
     private final Cell[][] grid;
 
     public Board(){

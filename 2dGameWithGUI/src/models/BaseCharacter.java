@@ -6,7 +6,7 @@ public abstract class BaseCharacter implements Character {
     private int x;
     private int y;
     private boolean isAlive;
-    public BaseCharacter(int x, int y){
+    protected BaseCharacter(int x, int y){
         this.x = x;
         this.y = y;
         this.isAlive = true;
